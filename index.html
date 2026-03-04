@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Master Conciertos | Reventa de Boletería de Élite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -190,7 +190,7 @@
             
             <div class="bg-black/60 border border-zinc-800/60 backdrop-blur-md p-5 md:p-6 rounded-2xl max-w-2xl mx-auto shadow-[0_10px_30px_rgba(0,0,0,0.7)] ring-1 ring-purple-500/10 relative z-20">
                 <p class="text-zinc-300 text-xs md:text-sm font-light leading-relaxed tracking-wide">
-                    Líderes expertos en la <span class="text-white font-bold">REVENTA AUTORIZADA</span> para eventos exclusivos. 
+                    Líder expertos en la <span class="text-white font-bold">REVENTA AUTORIZADA</span> para eventos exclusivos. 
                     Si está <span class="text-purple-400 font-bold">agotado</span>, o no consigues boletería... 
                     <span class="text-gold font-black drop-shadow-[0_0_10px_rgba(212,175,55,0.5)]">NOSOTROS LO HACEMOS POSIBLE.</span>
                 </p>
@@ -202,7 +202,7 @@
         <div id="banner-publicidad"></div>
     </div>
 
-    <main class="container mx-auto px-2 md:px-4 relative z-20">
+    <main class="container mx-auto px-1 md:px-4 relative z-20">
         
         <div class="mb-16 max-w-2xl mx-auto relative group px-4">
             <div class="absolute inset-y-0 left-8 flex items-center pointer-events-none z-10">
@@ -271,19 +271,6 @@
         db.ref('visitas').transaction(c => (c || 0) + 1);
         db.ref('visitas').on('value', s => { document.getElementById('num-visitas').innerText = s.val()?.toLocaleString() || 0; });
 
-        db.ref('publicidad').on('value', snap => {
-            const container = document.getElementById('banner-publicidad');
-            const section = document.getElementById('seccion-publi');
-            container.innerHTML = '';
-            if(snap.exists()){
-                section.classList.remove('hidden');
-                let rawHTML = '';
-                snap.forEach(child => { rawHTML += `<img src="${child.val().foto}" alt="Sponsor">`; });
-                let trackContent = ''; for(let i = 0; i < 15; i++) { trackContent += rawHTML; }
-                container.innerHTML = `<div class="marquee-track">${trackContent}</div><div class="marquee-track">${trackContent}</div>`;
-            } else { section.classList.add('hidden'); }
-        });
-
         db.ref('eventos').on('value', snap => {
             const contenedorNormal = document.getElementById('lista-eventos');
             const contenedorDestacados = document.getElementById('lista-destacados');
@@ -296,19 +283,23 @@
             
             let tieneDestacados = false;
 
-            if(!snap.exists()){
-                contenedorNormal.innerHTML = '<p class="text-zinc-500 text-center col-span-full py-10 italic">Actualizando red de accesos exclusivos...</p>';
-                seccionDestacados.classList.add('hidden');
-                return;
-            }
+            if(!snap.exists()) return;
 
+            let eventosArray = [];
             snap.forEach(child => {
-                const evento = child.val();
-                let strUbicacion = `📍 ${evento.ubicacion || 'Por definir'}`;
-                if(evento.estadio) strUbicacion += ` | 🏟️ ${evento.estadio}`;
+                eventosArray.push({ ...child.val(), key: child.key });
+            });
+            eventosArray.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
 
+            eventosArray.forEach(evento => {
                 let statusClase = ""; let statusTexto = ""; let cardClaseExtra = ""; let botonHtml = "";
+                
+                const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+                const fParts = evento.fecha.split('-');
+                const fechaLegible = `${parseInt(fParts[2])} de ${meses[parseInt(fParts[1]) - 1]} de ${fParts[0]}`;
+
                 const mensajeWa = encodeURIComponent(`Hola Master Conciertos. Solicito información del evento: *${evento.nombre}*`);
+                const waUrl = `https://wa.me/573022863855?text=${mensajeWa}`;
 
                 if(evento.estado === 'agotado') {
                     statusClase = "estado-soldout px-3 py-1 rounded-full text-[9px] text-white tracking-widest";
@@ -317,9 +308,9 @@
                 } else if (evento.estado === 'por_agotar') {
                     statusClase = "estado-agotandose px-3 py-1 rounded-full text-[9px] text-white tracking-widest";
                     statusTexto = "ÚLTIMAS";
-                    botonHtml = `<a href="https://wa.me/573215159607?text=${mensajeWa}" target="_blank" class="card-button block w-full text-center btn-gold py-3.5 rounded-xl text-xs uppercase tracking-[0.15em] shadow-[0_5px_20px_rgba(212,175,55,0.3)]">COMPRAR</a>`;
+                    botonHtml = `<a href="${waUrl}" target="_blank" class="card-button block w-full text-center btn-gold py-3.5 rounded-xl text-xs uppercase tracking-[0.15em] shadow-[0_5px_20px_rgba(212,175,55,0.3)]">COMPRAR</a>`;
                 } else {
-                    botonHtml = `<a href="https://wa.me/573215159607?text=${mensajeWa}" target="_blank" class="card-button block w-full text-center btn-gold py-3.5 rounded-xl text-xs uppercase tracking-[0.15em] shadow-[0_5px_20px_rgba(212,175,55,0.3)]">COMPRAR</a>`;
+                    botonHtml = `<a href="${waUrl}" target="_blank" class="card-button block w-full text-center btn-gold py-3.5 rounded-xl text-xs uppercase tracking-[0.15em] shadow-[0_5px_20px_rgba(212,175,55,0.3)]">COMPRAR</a>`;
                 }
 
                 let cardHtml = `
@@ -331,7 +322,7 @@
                                 <div class="absolute inset-0 bg-gradient-to-t from-[#000] via-[#000]/30 to-transparent opacity-95 pointer-events-none"></div>
                                 <div class="absolute top-4 left-4 z-10 card-location">
                                     <span class="bg-black/95 backdrop-blur-md text-gold text-[9px] font-black px-4 py-1.5 rounded-full border border-gold/30 tracking-widest uppercase italic shadow-[0_0_15px_rgba(212,175,55,0.4)]">
-                                        ${strUbicacion}
+                                        📍 ${evento.ubicacion || 'Por definir'}
                                     </span>
                                 </div>
                             </div>
@@ -339,7 +330,7 @@
                                 <h3 class="text-xl font-bold text-white uppercase leading-tight group-hover:text-gold transition-colors font-syncopate tracking-tight drop-shadow-md card-title">${evento.nombre}</h3>
                                 <div class="card-details">
                                     <div class="flex items-center justify-between mb-6 pb-4 border-b border-zinc-800/80">
-                                        <div><p class="text-zinc-500 text-[9px] uppercase tracking-wider font-bold mb-1">Fecha</p><p class="font-black text-white text-xs italic tracking-wide">${evento.fecha}</p></div>
+                                        <div><p class="text-zinc-500 text-[9px] uppercase tracking-wider font-bold mb-1">Fecha</p><p class="font-black text-white text-xs italic tracking-wide">${fechaLegible}</p></div>
                                         <div class="text-right"><p class="${statusClase} font-black uppercase italic">${statusTexto}</p></div>
                                     </div>
                                     ${botonHtml}
