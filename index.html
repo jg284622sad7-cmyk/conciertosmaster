@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Conciertos | Reventa de Boletería de Élite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -49,6 +49,7 @@
         #super-logo.scattered .char-wrapper { transform: translate(var(--tx), var(--ty)) rotate(var(--tr)) scale(var(--ts)); opacity: 0.15; filter: blur(5px); pointer-events: none; }
         
         .char-master, .char-conciertos { display: inline-block; background-size: 200% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: shine-gradient 4s linear infinite, char-float 3s ease-in-out infinite alternate, char-spin-exotic 6s infinite; transform-style: preserve-3d; }
+        
         .char-master { background-image: linear-gradient(to right, #c084fc, #7e22ce, #c084fc); filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.5)); }
         .char-conciertos { background-image: linear-gradient(to right, #bf953f, #fcf6ba, #b38728); filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4)); }
         @keyframes shine-gradient { to { background-position: 200% center; } }
@@ -201,7 +202,7 @@
         <div id="banner-publicidad"></div>
     </div>
 
-    <main class="container mx-auto px-1 md:px-4 relative z-20">
+    <main class="container mx-auto px-2 md:px-4 relative z-20">
         
         <div class="mb-16 max-w-2xl mx-auto relative group px-4">
             <div class="absolute inset-y-0 left-8 flex items-center pointer-events-none z-10">
@@ -217,7 +218,7 @@
                 <h2 class="text-3xl md:text-4xl font-syncopate uppercase tracking-tighter text-white italic drop-shadow-[0_0_15px_rgba(212,175,55,0.4)]">Eventos <span class="text-gold">Destacados</span></h2>
                 <div class="h-[1px] flex-grow bg-gradient-to-r from-gold/50 via-purple-900/30 to-transparent"></div>
             </div>
-            <div id="lista-destacados" class="grid grid-cols-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-10 px-1">
+            <div id="lista-destacados" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 px-1 md:px-6">
                 </div>
         </div>
 
@@ -226,7 +227,7 @@
             <div class="h-[1px] flex-grow bg-gradient-to-r from-zinc-800 via-transparent to-transparent"></div>
         </div>
 
-        <div id="lista-eventos" class="grid grid-cols-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-10 pb-32 px-1">
+        <div id="lista-eventos" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-10 pb-32 px-1 md:px-6">
             </div>
     </main>
 
@@ -294,10 +295,9 @@
             contenedorVideos.innerHTML = '';
             
             let tieneDestacados = false;
-            let videoIndex = 0;
 
             if(!snap.exists()){
-                contenedorNormal.innerHTML = '<p class="text-zinc-500 text-center col-span-full py-10 italic">Actualizando red...</p>';
+                contenedorNormal.innerHTML = '<p class="text-zinc-500 text-center col-span-full py-10 italic">Actualizando red de accesos exclusivos...</p>';
                 seccionDestacados.classList.add('hidden');
                 return;
             }
@@ -317,12 +317,11 @@
                 } else if (evento.estado === 'por_agotar') {
                     statusClase = "estado-agotandose px-3 py-1 rounded-full text-[9px] text-white tracking-widest";
                     statusTexto = "ÚLTIMAS";
-                    botonHtml = `<a href="https://wa.me/573215159607?text=${mensajeWa}" target="_blank" class="card-button block w-full text-center btn-gold py-3.5 rounded-xl text-xs uppercase tracking-[0.15em]">COMPRAR</a>`;
+                    botonHtml = `<a href="https://wa.me/573215159607?text=${mensajeWa}" target="_blank" class="card-button block w-full text-center btn-gold py-3.5 rounded-xl text-xs uppercase tracking-[0.15em] shadow-[0_5px_20px_rgba(212,175,55,0.3)]">COMPRAR</a>`;
                 } else {
-                    botonHtml = `<a href="https://wa.me/573215159607?text=${mensajeWa}" target="_blank" class="card-button block w-full text-center btn-gold py-3.5 rounded-xl text-xs uppercase tracking-[0.15em]">COMPRAR</a>`;
+                    botonHtml = `<a href="https://wa.me/573215159607?text=${mensajeWa}" target="_blank" class="card-button block w-full text-center btn-gold py-3.5 rounded-xl text-xs uppercase tracking-[0.15em] shadow-[0_5px_20px_rgba(212,175,55,0.3)]">COMPRAR</a>`;
                 }
 
-                // CÓDIGO DE TARJETA 100% ORIGINAL (Solo hereda el grid-cols-4 del padre)
                 let cardHtml = `
                     <div class="card-container item-evento">
                         <div class="card-stark group ${cardClaseExtra}" data-tilt>
